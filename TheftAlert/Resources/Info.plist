@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>TheftAlert</string>
+    <key>CFBundleDisplayName</key>
+    <string>Theft Alert</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.example.theftalert</string>
+    <key>CFBundleVersion</key>
+    <string>1.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleExecutable</key>
+    <string>TheftAlert</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>13.0</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Theft Alert checks whether your paired iPhone is nearby before sounding the alarm.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Theft Alert reads your current Wi-Fi network name to detect when your Mac has left a trusted location.</string>
+</dict>
+</plist>
