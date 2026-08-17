@@ -1,5 +1,42 @@
 # Memory
 
+## 2026-08-17 — Experimental slap/impact detection (opt-in)
+
+User asked about "SlapMac," a viral $5-7 app that makes a MacBook "moan"
+when slapped. Turns out it reads the same undocumented Apple Silicon MEMS
+accelerometer flagged as a maybe-later idea in the initial scaffold's
+memory below — it's now mainstream enough that several open-source clones
+exist (`spank`, `OpenSlap`, `MacSlapApp`), which is what made this feel
+safe enough to actually build rather than just note as an idea.
+
+User explicitly chose **opt-in only**, not primary: the existing lid/
+unplug/Wi-Fi triggers stay the default behavior; this is an extra signal
+you turn on deliberately.
+
+**What was added:**
+
+- `SensorHelper` — new second SPM executable target, root-only, reads HID
+  vendor usage page `0xFF00` usage `3`, posts a distributed notification on
+  detected impact.
+- `MotionImpactMonitor.swift` in the main app — launches the helper
+  elevated (repeated admin-password prompt per arm, no reboot persistence
+  yet — that's explicitly deferred, see README "Ideas for later"), listens
+  for its notifications.
+- Menu toggle with an explicit confirmation dialog before first enabling
+  (this is the only root-requiring code path in the app), plus a 3-level
+  sensitivity cycle (Low/Medium/High) stored in UserDefaults.
+- Hardware gating via `machdep.cpu.brand_string` sysctl: Apple Silicon
+  M1 Pro/Max/Ultra and M2+ only, excludes plain M1 and Intel.
+
+**Explicitly not done, called out in README:**
+
+- No persistent LaunchDaemon (`SMAppService.daemon()`) — would remove the
+  repeated admin prompt but needs a real Apple Developer ID to sign
+  correctly, and I have no way to test that packaging step here.
+- The exact HID key constants and the "sum of deltas as impact energy"
+  heuristic are copied from third-party reverse-engineering, not verified
+  first-hand — most likely thing to need rework once run on real hardware.
+
 ## 2026-08-17 — Initial scaffold
 
 Built the full v1 scaffold in one session, from a conceptual discussion

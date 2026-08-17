@@ -14,6 +14,7 @@ mkdir -p "${APP_DIR}/Contents/MacOS"
 mkdir -p "${APP_DIR}/Contents/Resources"
 
 cp "${BUILD_DIR}/TheftAlert" "${APP_DIR}/Contents/MacOS/TheftAlert"
+cp "${BUILD_DIR}/SensorHelper" "${APP_DIR}/Contents/MacOS/SensorHelper"
 cp "Resources/Info.plist" "${APP_DIR}/Contents/Info.plist"
 
 codesign --force --deep --sign - --entitlements "Resources/TheftAlert.entitlements" "${APP_DIR}"

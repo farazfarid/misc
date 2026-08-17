@@ -13,8 +13,12 @@ don't duplicate its content here.
 
 ## Stack
 
-- Swift Package Manager executable target (`Package.swift`), not an Xcode
-  project — AppKit + AVFoundation, macOS 13+ minimum.
+- Swift Package Manager, two executable targets (`Package.swift`), not an
+  Xcode project — AppKit + AVFoundation, macOS 13+ minimum.
+  - `TheftAlert` — the main, unprivileged menu-bar app.
+  - `SensorHelper` — a separate privileged process for the experimental
+    slap/impact detection feature (see below). Kept separate because it's
+    the only piece of this app that needs root.
 - No SwiftUI, no storyboard/XIB. Everything is programmatic AppKit
   (`NSStatusItem`, `NSMenu`, `NSAlert`-based passphrase prompt).
 - Distributed as a direct-download notarized `.app`, not the Mac App Store
@@ -31,9 +35,15 @@ don't duplicate its content here.
   which checks Bluetooth proximity before deciding whether to actually sound
   the siren.
 - `LidStateMonitor.swift`, `PowerSourceMonitor.swift`, `TrustedNetworkMonitor.swift`
-  — the three tamper-detection proxies (see README for *why* these three
-  and not real motion detection — no public accelerometer API exists on
-  modern Macs).
+  — the three default-on tamper-detection proxies (see README for *why*
+  these three and not real motion detection).
+- `MotionImpactMonitor.swift` — opt-in, Apple Silicon-only real impact
+  detection. Launches `SensorHelper` elevated via AppleScript's
+  `do shell script ... with administrator privileges` and listens for its
+  `DistributedNotificationCenter` events. Off by default and gated behind
+  an explicit user confirmation dialog (`AppDelegate.confirmExperimentalMotionDetection`)
+  because it's the only code path in this app that requires root — treat
+  any change here as a trust-boundary change, not a routine tweak.
 - `BluetoothProximity.swift` — paired *classic* Bluetooth connection check
   (deliberately not BLE scanning; iPhones randomize BLE addresses).
 - `SirenPlayer.swift` — synthesizes the siren tone in code (no bundled audio

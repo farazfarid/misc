@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let lidMonitor = LidStateMonitor()
     private let powerMonitor = PowerSourceMonitor()
     private let networkMonitor = TrustedNetworkMonitor()
+    private let motionMonitor = MotionImpactMonitor()
 
     private var isArmed = false
     private var alarmActive = false
@@ -18,6 +19,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var trustedSSID: String? {
         get { UserDefaults.standard.string(forKey: "trustedSSID") }
         set { UserDefaults.standard.set(newValue, forKey: "trustedSSID") }
+    }
+    private var motionDetectionEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: "motionDetectionEnabled") }
+        set { UserDefaults.standard.set(newValue, forKey: "motionDetectionEnabled") }
+    }
+    private var motionSensitivity: String {
+        get { UserDefaults.standard.string(forKey: "motionSensitivity") ?? "Medium" }
+        set { UserDefaults.standard.set(newValue, forKey: "motionSensitivity") }
+    }
+    private var motionThreshold: Double {
+        switch motionSensitivity {
+        case "High": return 2000
+        case "Low": return 7000
+        default: return 4000
+        }
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -31,6 +47,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         powerMonitor.onUnplugged = { [weak self] in self?.trigger(reason: "Power disconnected") }
         networkMonitor.trustedSSID = trustedSSID
         networkMonitor.onLeftTrustedNetwork = { [weak self] in self?.trigger(reason: "Left trusted Wi-Fi network") }
+        motionMonitor.onImpact = { [weak self] magnitude in
+            self?.trigger(reason: "Impact/slap detected (experimental sensor, magnitude \(Int(magnitude)))")
+        }
 
         if KeychainStore.hasPassphrase == false {
             promptForNewPassphrase()
@@ -75,6 +94,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         lidMonitor.start()
         powerMonitor.start()
         networkMonitor.start()
+        if motionDetectionEnabled, MotionImpactMonitor.isSupported {
+            motionMonitor.start(threshold: motionThreshold)
+        }
         rebuildMenu()
     }
 
@@ -91,6 +113,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         lidMonitor.stop()
         powerMonitor.stop()
         networkMonitor.stop()
+        motionMonitor.stop()
         rebuildMenu()
     }
 
@@ -123,6 +146,41 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func selectTrustedDevice(_ sender: NSMenuItem) {
         trustedDeviceAddress = sender.representedObject as? String
+        rebuildMenu()
+    }
+
+    @objc private func toggleMotionDetection() {
+        guard MotionImpactMonitor.isSupported else {
+            notify(title: "Not supported", body: "Slap/impact detection needs Apple Silicon (M1 Pro/Max/Ultra or M2 and later).")
+            return
+        }
+        if motionDetectionEnabled {
+            motionDetectionEnabled = false
+            motionMonitor.stop()
+        } else if confirmExperimentalMotionDetection() {
+            motionDetectionEnabled = true
+        }
+        rebuildMenu()
+    }
+
+    private func confirmExperimentalMotionDetection() -> Bool {
+        let alert = NSAlert()
+        alert.messageText = "Enable Experimental Slap/Impact Detection?"
+        alert.informativeText = """
+        This reads your Mac's undocumented internal accelerometer through a separate helper process that must run as root. \
+        macOS will ask for your admin password every time you arm with this on — it does not persist across reboots yet. \
+        It uses a private, unsupported API that could break in a future macOS update.
+        """
+        alert.addButton(withTitle: "Enable")
+        alert.addButton(withTitle: "Cancel")
+        NSApp.activate(ignoringOtherApps: true)
+        return alert.runModal() == .alertFirstButtonReturn
+    }
+
+    @objc private func cycleMotionSensitivity() {
+        let order = ["Low", "Medium", "High"]
+        let current = order.firstIndex(of: motionSensitivity) ?? 1
+        motionSensitivity = order[(current + 1) % order.count]
         rebuildMenu()
     }
 
@@ -159,6 +217,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let ssidTitle = trustedSSID == nil ? "Set Trusted Wi-Fi Network..." : "Trusted Network: \(trustedSSID ?? "")"
         menu.addItem(NSMenuItem(title: ssidTitle, action: #selector(setTrustedNetwork), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Change Passphrase...", action: #selector(promptForNewPassphrase), keyEquivalent: ""))
+
+        let motionTitle: String
+        if MotionImpactMonitor.isSupported == false {
+            motionTitle = "Slap/Impact Detection (unsupported on this Mac)"
+        } else {
+            motionTitle = motionDetectionEnabled ? "Disable Slap/Impact Detection (Experimental) \u{2713}" : "Enable Slap/Impact Detection (Experimental)..."
+        }
+        let motionItem = NSMenuItem(title: motionTitle, action: #selector(toggleMotionDetection), keyEquivalent: "")
+        motionItem.isEnabled = MotionImpactMonitor.isSupported
+        menu.addItem(motionItem)
+        if motionDetectionEnabled {
+            menu.addItem(NSMenuItem(title: "Slap Sensitivity: \(motionSensitivity) (click to cycle)", action: #selector(cycleMotionSensitivity), keyEquivalent: ""))
+        }
 
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))

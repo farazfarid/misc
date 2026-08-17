@@ -8,6 +8,10 @@ let package = Package(
         .executableTarget(
             name: "TheftAlert",
             path: "Sources/TheftAlert"
+        ),
+        .executableTarget(
+            name: "SensorHelper",
+            path: "Sources/SensorHelper"
         )
     ]
 )
