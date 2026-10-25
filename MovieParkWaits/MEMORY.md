@@ -23,3 +23,10 @@
 - Deployed `public/` to the `gh-pages` branch. Pages has to be switched on once in repo Settings → Pages → Deploy from branch `gh-pages` / root.
 - **Risk**: direct mode depends on Queue-Times allowing CORS or on free third-party proxies, which can rate-limit or vanish. A proper fix is a tiny own proxy (e.g. a Cloudflare Worker) set as the first entry in `PROXIES`.
 - Not verified against live Queue-Times from this container (network blocked).
+
+## 2026-10-25: Movie Park themed redesign (tastemaker skill)
+- New look: cinema marquee header, ride tickets with movie-style wait labels, film-strip stats, "Spin the reel" weighted ride picker, alert bottom sheet (replaced `prompt()`), area filter chips, count-up on wait changes, film-leader loader. Dark only. Details and colour contract in `.tastemaker/style-lock.md`.
+- Deliberately does NOT use Movie Park's real logo/wordmark; footer says it's a fan tool, not affiliated.
+- Verified in Playwright (static mode, faked upstream): 390 px + desktop, no console errors, no horizontal scroll; spin, alert sheet, toast, area filter work. Server-mode tests pass.
+- Prefs migration: old `openOnly` pref maps to the new `filter: 'open'`.
+- Open: the user hasn't reviewed the direction yet (`.tastemaker/decisions.log` pending).

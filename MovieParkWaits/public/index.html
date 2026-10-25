@@ -4,46 +4,93 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Movie Park Waits</title>
-  <meta name="description" content="Live wait times for Movie Park Germany in Bottrop">
-  <meta name="theme-color" content="#111318">
+  <meta name="description" content="Live queue times for every ride at Movie Park Germany in Bottrop">
+  <meta name="theme-color" content="#120c10">
+  <meta name="color-scheme" content="dark">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Limelight&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="top">
-    <div class="title">
-      <h1>Movie Park Waits</h1>
-      <p class="sub">Bottrop · <span id="updated">loading…</span></p>
+  <!-- Icon sprite: paths follow Lucide (ISC license), drawn inline because the build had no network. -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+    <symbol id="i-clapper" viewBox="0 0 24 24"><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3Z"/><path d="m6.2 5.3 3.1 3.9"/><path d="m12.4 3.4 3.1 4"/><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></symbol>
+    <symbol id="i-ticket" viewBox="0 0 24 24"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+  </svg>
+
+  <header class="marquee">
+    <div class="marquee-sign">
+      <p class="marquee-kicker">Movie Park Germany · Bottrop</p>
+      <h1>Now Waiting</h1>
+      <p class="marquee-status"><span class="live-dot" id="live-dot"></span><span id="updated">Rolling film…</span></p>
     </div>
-    <button id="refresh" class="icon-btn" type="button" aria-label="Refresh now" title="Refresh now">↻</button>
+    <button id="refresh" class="icon-btn marquee-refresh" type="button" aria-label="Refresh wait times">
+      <svg class="icon"><use href="#i-refresh"/></svg>
+    </button>
   </header>
 
-  <div id="banner" class="banner" hidden></div>
+  <div id="banner" class="banner" role="status" hidden></div>
 
-  <section class="summary" aria-label="Park summary">
-    <div class="stat"><span class="stat-value" id="s-open">–</span><span class="stat-label">rides open</span></div>
-    <div class="stat"><span class="stat-value" id="s-avg">–</span><span class="stat-label">avg wait</span></div>
-    <div class="stat"><span class="stat-value" id="s-short">–</span><span class="stat-label" id="s-short-label">shortest</span></div>
+  <section class="feature" aria-labelledby="feature-title">
+    <div class="feature-reel" id="reel" aria-live="polite">
+      <p class="feature-label" id="feature-title">Shortest line right now</p>
+      <p class="feature-name" id="feature-name">&nbsp;</p>
+      <p class="feature-wait"><span id="feature-wait">–</span><small>min</small></p>
+    </div>
+    <button id="spin" class="spin-btn" type="button">
+      <svg class="icon"><use href="#i-clapper"/></svg>
+      <span>Spin the reel</span>
+    </button>
+    <p class="feature-hint">Can't decide? We'll pick a ride with a short queue.</p>
   </section>
 
-  <section class="controls" aria-label="Filters">
-    <input id="search" type="search" placeholder="Search rides" autocomplete="off">
-    <select id="sort" aria-label="Sort by">
-      <option value="wait">Shortest wait</option>
-      <option value="wait-desc">Longest wait</option>
-      <option value="name">Name</option>
-      <option value="land">Area</option>
+  <section class="filmstrip" aria-label="Park summary">
+    <div class="frame"><b id="s-open">–</b><span>rides open</span></div>
+    <div class="frame"><b id="s-avg">–</b><span>average wait</span></div>
+    <div class="frame"><b id="s-long">–</b><span id="s-long-label">longest line</span></div>
+  </section>
+
+  <section class="controls" aria-label="Filter and sort">
+    <div class="search">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input id="search" type="search" placeholder="Find a ride" autocomplete="off" aria-label="Find a ride">
+    </div>
+    <select id="sort" aria-label="Sort rides">
+      <option value="wait">Shortest first</option>
+      <option value="wait-desc">Longest first</option>
+      <option value="name">A to Z</option>
+      <option value="land">By area</option>
     </select>
-    <label class="toggle"><input id="open-only" type="checkbox"> Open only</label>
+    <div class="chips" id="chips" role="group" aria-label="Show"></div>
   </section>
 
-  <main id="rides" class="rides" aria-live="polite"></main>
+  <main id="rides" class="rides">
+    <div class="leader" aria-label="Loading wait times"><span>3</span></div>
+  </main>
 
-  <footer class="foot">
-    Data <a id="source" href="https://queue-times.com/parks/310" target="_blank" rel="noopener">Powered by Queue-Times.com</a>.
-    Posted waits from the park, updated about every 5 minutes. ★ pins a ride, 🔔 alerts you when its wait drops.
+  <footer class="credits">
+    <p>Data <a id="source" href="https://queue-times.com/parks/310" target="_blank" rel="noopener">Powered by Queue-Times.com</a>. Times are the park's posted waits, refreshed about every 5 minutes.</p>
+    <p>A fan-made tool, not affiliated with Movie Park Germany.</p>
   </footer>
+
+  <dialog id="alert-sheet" class="sheet" aria-labelledby="sheet-title">
+    <form method="dialog">
+      <button class="icon-btn sheet-close" value="cancel" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>
+      <p class="sheet-kicker">Wait alert</p>
+      <h2 id="sheet-title">Ride name</h2>
+      <p class="sheet-copy">Tell me when the line is this short or shorter:</p>
+      <div class="sheet-options" id="sheet-options"></div>
+      <button class="sheet-remove" id="sheet-remove" value="remove" type="submit">Remove alert</button>
+    </form>
+  </dialog>
 
   <div id="toast" class="toast" role="status" hidden></div>
 
