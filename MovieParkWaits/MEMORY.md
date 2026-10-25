@@ -30,3 +30,9 @@
 - Verified in Playwright (static mode, faked upstream): 390 px + desktop, no console errors, no horizontal scroll; spin, alert sheet, toast, area filter work. Server-mode tests pass.
 - Prefs migration: old `openOnly` pref maps to the new `filter: 'open'`.
 - Open: the user hasn't reviewed the direction yet (`.tastemaker/decisions.log` pending).
+
+## 2026-10-25: Fix "401" on GitHub Pages
+- Symptom: site showed "Can't load wait times (HTTP 401)". Cause: direct Queue-Times fetch and the free CORS proxies failed; the last one tried, corsproxy.io, now requires an API key (401).
+- Tried an own relay first: Vercel MCP had no permission to create a project; Supabase only has the user's other projects (gls-portal, kantwerk), not used for this. User chose the GitHub Action route.
+- Added `scripts/snapshot.mjs` + `.github/workflows/movie-park-waits.yml` (also pushed to the default branch `claude/mac-theft-alert-app-jxb48q`, required for cron). Frontend now prefers `waits.json` (snapshot mode). corsproxy.io removed.
+- Verified locally: snapshot script offline (mock) incl. failure path, simulated workflow runs (commit once, then nothing), browser test of built site with Queue-Times blocked shows all rides, zero external calls. Not yet verified: the first real Action run on GitHub.
