@@ -38,3 +38,8 @@
 - Verified locally: snapshot script offline (mock) incl. failure path, simulated workflow runs (commit once, then nothing), browser test of built site with Queue-Times blocked shows all rides, zero external calls. Not yet verified: the first real Action run on GitHub.
 - First real Action run succeeded (11:03 UTC): 47 attractions incl. Halloween Horror Festival mazes. Queue-Times sends no lands for this park, so area chips don't show. Ride names contain zero-width spaces: now stripped in server/snapshot normalize and in the frontend.
 - Moved the refresh button into the marquee status line (it squeezed the title on narrow phones).
+
+## 2026-10-25: Data sanity check ("why does so much say 5 min?")
+- Checked live data: every wait is a multiple of 5, no open ride ever shows 0, so the park posts in 5 min steps with 5 as the floor (= little or no queue). Values move between runs (Ghost Chasers 40→30, Jimmy Neutron 5→25), Queue-Times timestamps are fresh. Couldn't confirm the 5 min floor from an official source; it's inferred from the data. Footer now explains it.
+- Status line now shows the age of the park's data (newest Queue-Times `last_updated`), not our fetch time.
+- Scheduled (cron) runs had not fired yet ~15 min after the workflow landed on the default branch; push and manual runs work. If cron stays unreliable, options: accept it, or a Vercel relay (needs Vercel team access). A self-re-dispatching loop was considered and rejected (Actions ToS grey zone).

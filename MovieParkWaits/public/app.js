@@ -384,14 +384,20 @@ function renderFeature() {
   els.spin.disabled = open.length < 2;
 }
 
+// How old the park's numbers are: Queue-Times' newest per-ride timestamp, not when we last fetched.
+function dataTime() {
+  const stamps = data.rides.map((r) => r.lastUpdated).filter(Boolean).sort();
+  return stamps.at(-1) || data.fetchedAt;
+}
+
 function renderStatus() {
   if (!data) return;
-  els.updated.textContent = `Live · updated ${relTime(data.fetchedAt)}`;
+  els.updated.textContent = `Live · park data ${relTime(dataTime())}`;
   els.liveDot.classList.toggle('stale', Boolean(data.stale));
   let msg = '';
   if (data.error && data.fetchedAt) msg = `Can't reach Queue-Times right now (${data.error}). Showing the last reel from ${relTime(data.fetchedAt)}.`;
   else if (data.error) msg = `Can't reach Queue-Times right now (${data.error}).`;
-  else if (mode === 'snapshot' && data.rides.some((r) => r.isOpen) && Date.now() - new Date(data.fetchedAt) > SNAPSHOT_STALE_MS) msg = `Heads up: these times are from ${relTime(data.fetchedAt)}. The next update should land within a few minutes.`;
+  else if (mode === 'snapshot' && data.rides.some((r) => r.isOpen) && Date.now() - new Date(dataTime()) > SNAPSHOT_STALE_MS) msg = `Heads up: these times are from ${relTime(dataTime())}. The next update should land within a few minutes.`;
   else if (data.rides.length && !data.rides.some((r) => r.isOpen)) msg = 'The lights are down: every ride is closed right now. Check back during opening hours.';
   els.banner.hidden = !msg;
   els.banner.textContent = msg;
