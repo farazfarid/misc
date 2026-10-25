@@ -62,9 +62,12 @@ function berlinDate(d = new Date()) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).format(d);
 }
 
+// Queue-Times names for this park carry stray zero-width spaces; they break sorting and search.
+const cleanName = (name) => String(name).replace(/[\u200B-\u200D\uFEFF]/g, '').trim();
+
 function normalize(raw) {
   const toRide = (r, land) => ({
-    id: String(r.id), name: r.name, land, isOpen: Boolean(r.is_open),
+    id: String(r.id), name: cleanName(r.name), land, isOpen: Boolean(r.is_open),
     wait: Number.isFinite(r.wait_time) ? r.wait_time : null, lastUpdated: r.last_updated || null,
   });
   const rides = [];
@@ -153,6 +156,7 @@ async function loadSnapshot() {
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const snap = await res.json();
   if (!Array.isArray(snap.rides)) throw new Error('unexpected snapshot');
+  for (const r of snap.rides) r.name = cleanName(r.name);
   return snap;
 }
 
