@@ -30,11 +30,13 @@
     <div class="marquee-sign">
       <p class="marquee-kicker">Movie Park Germany · Bottrop</p>
       <h1>Now Waiting</h1>
-      <p class="marquee-status"><span class="live-dot" id="live-dot"></span><span id="updated">Rolling film…</span></p>
+      <p class="marquee-status">
+        <span class="live-dot" id="live-dot"></span><span id="updated">Rolling film…</span>
+        <button id="refresh" class="marquee-refresh" type="button" aria-label="Refresh wait times">
+          <svg class="icon"><use href="#i-refresh"/></svg>
+        </button>
+      </p>
     </div>
-    <button id="refresh" class="icon-btn marquee-refresh" type="button" aria-label="Refresh wait times">
-      <svg class="icon"><use href="#i-refresh"/></svg>
-    </button>
   </header>
 
   <div id="banner" class="banner" role="status" hidden></div>

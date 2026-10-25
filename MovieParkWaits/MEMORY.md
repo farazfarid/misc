@@ -36,3 +36,5 @@
 - Tried an own relay first: Vercel MCP had no permission to create a project; Supabase only has the user's other projects (gls-portal, kantwerk), not used for this. User chose the GitHub Action route.
 - Added `scripts/snapshot.mjs` + `.github/workflows/movie-park-waits.yml` (also pushed to the default branch `claude/mac-theft-alert-app-jxb48q`, required for cron). Frontend now prefers `waits.json` (snapshot mode). corsproxy.io removed.
 - Verified locally: snapshot script offline (mock) incl. failure path, simulated workflow runs (commit once, then nothing), browser test of built site with Queue-Times blocked shows all rides, zero external calls. Not yet verified: the first real Action run on GitHub.
+- First real Action run succeeded (11:03 UTC): 47 attractions incl. Halloween Horror Festival mazes. Queue-Times sends no lands for this park, so area chips don't show. Ride names contain zero-width spaces: now stripped in server/snapshot normalize and in the frontend.
+- Moved the refresh button into the marquee status line (it squeezed the title on narrow phones).

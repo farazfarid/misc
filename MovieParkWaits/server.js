@@ -55,7 +55,8 @@ export function normalize(raw) {
 function toRide(r, land) {
   return {
     id: String(r.id),
-    name: r.name,
+    // Queue-Times names for this park carry stray zero-width spaces; they break sorting and search.
+    name: String(r.name).replace(/[\u200B-\u200D\uFEFF]/g, '').trim(),
     land,
     isOpen: Boolean(r.is_open),
     wait: Number.isFinite(r.wait_time) ? r.wait_time : null,

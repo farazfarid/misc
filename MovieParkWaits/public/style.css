@@ -90,7 +90,7 @@ button { font: inherit; color: inherit; }
 @keyframes chase { to { background-position: 7px 7px; } }
 
 .marquee-sign {
-  padding: var(--space-4) 52px var(--space-3);
+  padding: var(--space-4) var(--space-3) var(--space-3);
   text-align: center;
   border-radius: 10px;
   background: #fff8ea;
@@ -100,7 +100,7 @@ button { font: inherit; color: inherit; }
 .marquee-kicker {
   margin: 0;
   font: 400 0.95rem/1 var(--font-numeric);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.16em;
   color: var(--velvet);
 }
 .marquee h1 {
@@ -121,11 +121,14 @@ button { font: inherit; color: inherit; }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgb(31 157 85 / 0.6); } 100% { box-shadow: 0 0 0 8px rgb(31 157 85 / 0); } }
 
 .marquee-refresh {
-  position: absolute; top: 22px; right: 22px;
-  width: 36px; height: 36px;
-  background: #fff8ea; color: #1a1206; border-color: #1a1206;
+  display: grid; place-items: center;
+  width: 32px; height: 32px; margin-left: 2px;
+  border: 0; border-radius: 50%;
+  background: transparent; color: #5a4a3e;
+  cursor: pointer;
 }
-.marquee-refresh .icon { width: 18px; height: 18px; }
+@media (hover: hover) { .marquee-refresh:hover { background: rgb(26 18 6 / 0.08); color: #1a1206; } }
+.marquee-refresh .icon { width: 16px; height: 16px; }
 .marquee-refresh.spinning .icon { animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 

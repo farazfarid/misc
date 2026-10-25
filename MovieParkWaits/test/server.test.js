@@ -29,6 +29,11 @@ test('normalize flattens lands and the top-level rides array', () => {
   ]);
 });
 
+test('normalize strips zero-width characters from names', () => {
+  const [r] = normalize({ lands: [], rides: [{ id: 1, name: '\u200BThe \u200BHigh Fall', is_open: true, wait_time: 5 }] });
+  assert.equal(r.name, 'The High Fall');
+});
+
 test('/api/waits returns normalized rides with history', async () => {
   const body = await (await fetch(`${base}/api/waits`)).json();
   assert.equal(body.park.id, '310');
