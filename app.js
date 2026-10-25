@@ -1,6 +1,7 @@
-// Movie Park Waits frontend: polls /api/waits and renders ride tickets.
-// Without the Node server (static hosting like GitHub Pages) it falls back to
-// fetching Queue-Times from the browser and keeps today's history in localStorage.
+// Movie Park Waits frontend: renders ride tickets from one of three sources, tried in order:
+// 1. /api/waits from server.js (self-hosted)
+// 2. waits.json, a snapshot a GitHub Action writes to gh-pages every ~5 min (GitHub Pages)
+// 3. Queue-Times fetched from the browser (direct or via a public CORS proxy), history in localStorage
 const REFRESH_MS = 60 * 1000;
 const TREND_WINDOW_MS = 30 * 60 * 1000;
 const PREFS_KEY = 'mpw-prefs-v1';
@@ -8,17 +9,17 @@ const HISTORY_KEY = 'mpw-history-v1';
 const PROXY_KEY = 'mpw-proxy-v1';
 const PARK_ID = '310';
 const UPSTREAM = `https://queue-times.com/parks/${PARK_ID}/queue_times.json`;
-// Queue-Times may not send CORS headers, so try direct first, then public CORS proxies.
+// Last resort only. corsproxy.io was dropped: it answers 401 without an API key.
 const PROXIES = [
   (u) => u,
   (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
 ];
+const SNAPSHOT_STALE_MS = 30 * 60 * 1000;
 const ALERT_OPTIONS = [5, 10, 15, 20, 30, 45];
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-let mode = 'server'; // switches to 'direct' once /api/waits turns out not to exist
+let mode = 'server'; // 'server' | 'snapshot' | 'direct', decided on first load
 let data = null;
 let loading = false;
 let firstRender = true;
@@ -133,11 +134,37 @@ async function loadFromServer() {
   const res = await fetch('api/waits', { cache: 'no-store' });
   const isJson = (res.headers.get('content-type') || '').includes('json');
   if (res.status === 404 || res.status === 405 || (res.ok && !isJson)) {
-    mode = 'direct';
-    return loadDirect();
+    try {
+      const snap = await loadSnapshot();
+      mode = 'snapshot';
+      return snap;
+    } catch {
+      mode = 'direct';
+      return loadDirect();
+    }
   }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
+}
+
+async function loadSnapshot() {
+  // Query string busts GitHub Pages' 10 minute cache.
+  const res = await fetch(`waits.json?t=${Date.now()}`, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const snap = await res.json();
+  if (!Array.isArray(snap.rides)) throw new Error('unexpected snapshot');
+  return snap;
+}
+
+async function loadAny() {
+  if (mode === 'direct') return loadDirect();
+  if (mode === 'snapshot') {
+    try { return await loadSnapshot(); } catch (err) {
+      if (!data) throw err;
+      return { ...data, error: err.message, stale: true };
+    }
+  }
+  return loadFromServer();
 }
 
 // --- Presentation helpers ---
@@ -360,6 +387,7 @@ function renderStatus() {
   let msg = '';
   if (data.error && data.fetchedAt) msg = `Can't reach Queue-Times right now (${data.error}). Showing the last reel from ${relTime(data.fetchedAt)}.`;
   else if (data.error) msg = `Can't reach Queue-Times right now (${data.error}).`;
+  else if (mode === 'snapshot' && data.rides.some((r) => r.isOpen) && Date.now() - new Date(data.fetchedAt) > SNAPSHOT_STALE_MS) msg = `Heads up: these times are from ${relTime(data.fetchedAt)}. The next update should land within a few minutes.`;
   else if (data.rides.length && !data.rides.some((r) => r.isOpen)) msg = 'The lights are down: every ride is closed right now. Check back during opening hours.';
   els.banner.hidden = !msg;
   els.banner.textContent = msg;
@@ -495,7 +523,7 @@ async function load() {
   loading = true;
   els.refresh.classList.add('spinning');
   try {
-    data = mode === 'direct' ? await loadDirect() : await loadFromServer();
+    data = await loadAny();
     if (data.source?.url) els.source.href = data.source.url;
     render();
     renderStatus();
@@ -541,7 +569,8 @@ els.refresh.addEventListener('click', load);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 
 // Direct mode hits Queue-Times per viewer, so poll every other tick (2 min) there.
+// Snapshot mode re-reads waits.json every minute; it changes at most every ~5 min.
 let tick = 0;
-setInterval(() => { tick++; if (!document.hidden && (mode === 'server' || tick % 2 === 0)) load(); }, REFRESH_MS);
+setInterval(() => { tick++; if (!document.hidden && (mode !== 'direct' || tick % 2 === 0)) load(); }, REFRESH_MS);
 setInterval(renderStatus, 30 * 1000);
 load();
