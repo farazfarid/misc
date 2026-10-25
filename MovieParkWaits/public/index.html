@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Movie Park Waits</title>
+  <meta name="description" content="Live wait times for Movie Park Germany in Bottrop">
+  <meta name="theme-color" content="#111318">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="title">
+      <h1>Movie Park Waits</h1>
+      <p class="sub">Bottrop · <span id="updated">loading…</span></p>
+    </div>
+    <button id="refresh" class="icon-btn" type="button" aria-label="Refresh now" title="Refresh now">↻</button>
+  </header>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <section class="summary" aria-label="Park summary">
+    <div class="stat"><span class="stat-value" id="s-open">–</span><span class="stat-label">rides open</span></div>
+    <div class="stat"><span class="stat-value" id="s-avg">–</span><span class="stat-label">avg wait</span></div>
+    <div class="stat"><span class="stat-value" id="s-short">–</span><span class="stat-label" id="s-short-label">shortest</span></div>
+  </section>
+
+  <section class="controls" aria-label="Filters">
+    <input id="search" type="search" placeholder="Search rides" autocomplete="off">
+    <select id="sort" aria-label="Sort by">
+      <option value="wait">Shortest wait</option>
+      <option value="wait-desc">Longest wait</option>
+      <option value="name">Name</option>
+      <option value="land">Area</option>
+    </select>
+    <label class="toggle"><input id="open-only" type="checkbox"> Open only</label>
+  </section>
+
+  <main id="rides" class="rides" aria-live="polite"></main>
+
+  <footer class="foot">
+    Data <a id="source" href="https://queue-times.com/parks/310" target="_blank" rel="noopener">Powered by Queue-Times.com</a>.
+    Posted waits from the park, updated about every 5 minutes. ★ pins a ride, 🔔 alerts you when its wait drops.
+  </footer>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

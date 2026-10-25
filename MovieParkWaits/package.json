@@ -1,0 +1,13 @@
+{
+  "name": "movie-park-waits",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live wait-time dashboard for Movie Park Germany (Bottrop), data from Queue-Times.com",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "dev:mock": "MOCK_FILE=test/fixture.json node server.js",
+    "test": "node --test test/*.test.js"
+  }
+}

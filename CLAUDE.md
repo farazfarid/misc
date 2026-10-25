@@ -38,3 +38,6 @@ folder is self-contained:
   your locked Mac and sounds a siren if it's tampered with, unless a
   paired iPhone is nearby. Swift Package, AppKit-based, unbuilt/untested
   (built without macOS access). See `TheftAlert/CLAUDE.md`.
+- `MovieParkWaits/` — live wait-time dashboard web app for Movie Park
+  Germany (Bottrop). Zero-dependency Node server polling Queue-Times.com
+  plus a vanilla JS frontend. See `MovieParkWaits/CLAUDE.md`.
