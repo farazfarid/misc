@@ -30,6 +30,19 @@ Live wait-time dashboard for **Movie Park Germany (Bottrop)** as a mobile-friend
 - GitHub cron is best effort: runs often start 5 to 15 min late. The page warns when `waits.json` is older than 30 min while rides are open.
 - GitHub disables scheduled workflows after 60 days without repo activity; re-enable in the Actions tab if that happens.
 
+## Features beyond the list (v3)
+- UI language: German. Tabs at the bottom: Wartezeiten / Karte / Gruppe.
+- `public/rides-info.json`: per Queue-Times ride id → `group` (kids/family/thrill/horror/other), `minCm`, `maxCm`,
+  `minAge`, official `rule` text, `lat`/`lon`, official `url`. Extracted from movieparkgermany.de attraction pages
+  (JSON-LD geo + "Zugangsbeschränkungen"). `group` is OUR classification: "kids" = built for small children,
+  adults normally only ride as escort. Horror = Halloween Horror Festival mazes (no official pages, inferred).
+  New Queue-Times ride ids won't have info until added here.
+- `public/map.js`: Leaflet 1.9.4 from unpkg (SRI pinned) + OSM tiles, loaded on first map open.
+- `public/group.js`: group votes + live locations between phones via public **ntfy.sh** (no account).
+  Topic = hash of group code, payload AES-GCM encrypted with a PBKDF2 key from the code. ntfy caches ~12 h.
+  Location sharing is throttled (≥90 s and ≥25 m, or every 5 min) to stay inside ntfy.sh's free rate limits.
+  Invite links: `#g=<code>`.
+
 ## Commands
 - `npm start` → live data on http://localhost:3000
 - `npm run dev:mock` → serves the fixture, for working offline

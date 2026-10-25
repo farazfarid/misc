@@ -1,0 +1,418 @@
+{
+ "_source": "Official movieparkgermany.de attraction pages (fetched 2026-10-25). group is our own classification; see MEMORY.md.",
+ "rides": {
+  "10994": {
+   "group": "kids",
+   "minCm": 0,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Tour",
+   "audience": "Kinder & Familien",
+   "rule": "unter 0,90 m",
+   "lat": 51.619073,
+   "lon": 6.975496,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/paw-patrol-adventure"
+  },
+  "10990": {
+   "group": "kids",
+   "minCm": 0,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "unter 0,90 m (und Kinder unter",
+   "lat": 51.619192,
+   "lon": 6.975521,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/zumas-zoomers"
+  },
+  "11006": {
+   "group": "kids",
+   "minCm": 0,
+   "maxCm": null,
+   "minAge": 1,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "unter 1,35 m mit Begleitung",
+   "lat": 51.623518,
+   "lon": 6.974699,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/rescue-112"
+  },
+  "10991": {
+   "group": "kids",
+   "minCm": 0,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "unter 1,35 mit Begleitung",
+   "lat": 51.618922,
+   "lon": 6.9753058,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/skyes-high-flyer"
+  },
+  "10992": {
+   "group": "kids",
+   "minCm": 100,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "ab 1,00 m mit Begleitung",
+   "lat": 51.620071,
+   "lon": 6.975403,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/fairy-world-spin"
+  },
+  "11008": {
+   "group": "kids",
+   "minCm": 90,
+   "maxCm": 160,
+   "minAge": null,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "ab 0,90 m; max. 1,60 m",
+   "lat": 51.620055,
+   "lon": 6.974327,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/sea-swing"
+  },
+  "11002": {
+   "group": "kids",
+   "minCm": 90,
+   "maxCm": null,
+   "minAge": 4,
+   "type": "Achterbahn",
+   "audience": "Kinder & Familien",
+   "rule": "ab 0,90 m, unter 1,35 m mit Begleitung",
+   "lat": 51.619638,
+   "lon": 6.975788,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/backyardigans-mission-to-mars"
+  },
+  "11010": {
+   "group": "kids",
+   "minCm": 121,
+   "maxCm": 150,
+   "minAge": null,
+   "type": "Fahrt",
+   "audience": "Kinder & Familien",
+   "rule": "Trainings-Parcours: 1,21 m; max. Trainings-Parcours: 1,50 m",
+   "lat": 51.620048,
+   "lon": 6.975117,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/tmnt-license-to-drive"
+  },
+  "11011": {
+   "group": "kids",
+   "minCm": 100,
+   "maxCm": null,
+   "minAge": 4,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "Kinder zwischen 1,00 m und 1,30 m dürfen dieses Fahrgeschäft nur in",
+   "lat": 51.623661,
+   "lon": 6.973112,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/stormy-cruise"
+  },
+  "11001": {
+   "group": "family",
+   "minCm": 95,
+   "maxCm": 205,
+   "minAge": 4,
+   "type": "Achterbahn",
+   "audience": "Kinder & Familien",
+   "rule": "ab 0,95 m, unter 1,30 m mit Begleitung; max. 2,05 m",
+   "lat": 51.61994,
+   "lon": 6.973595,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/jimmy-neutrons-atomic-flyer"
+  },
+  "10995": {
+   "group": "family",
+   "minCm": 100,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Wasser",
+   "audience": "Kinder & Familien",
+   "rule": "ab 1,00 m, unter 1,20 m mit Begleitung",
+   "lat": 51.619944,
+   "lon": 6.97532,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/doras-big-river-adventure"
+  },
+  "10983": {
+   "group": "family",
+   "minCm": 90,
+   "maxCm": null,
+   "minAge": null,
+   "type": "Wasser",
+   "audience": "Kinder & Familien",
+   "rule": "ab 0,90 m, unter 1,20 m mit Begleitung",
+   "lat": 51.619612,
+   "lon": 6.97435,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/spongeBob-splash-bash"
+  },
+  "10996": {
+   "group": "family",
+   "minCm": 120,
+   "maxCm": null,
+   "minAge": 6,
+   "type": "Sky Chaser Giant",
+   "audience": "Kinder & Familien",
+   "rule": "ab 1,20 m, unter 1,40 m mit Begleitung",
+   "lat": 51.619853,
+   "lon": 6.976515,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/avatar-air-glider"
+  },
+  "10998": {
+   "group": "family",
+   "minCm": 0,
+   "maxCm": null,
+   "minAge": 6,
+   "type": "Fahrgeschäft",
+   "audience": "Alle Besucher",
+   "rule": "unter 1,30 m mit Begleitung",
+   "lat": 51.623272,
+   "lon": 6.974276,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/santa-monica-wheel"
+  },
+  "10988": {
+   "group": "family",
+   "minCm": 120,
+   "maxCm": 195,
+   "minAge": 6,
+   "type": "Fahrgeschäft",
+   "audience": "Kinder & Familien",
+   "rule": "ab 1,20 m; max. 1,95 m",
+   "lat": null,
+   "lon": null,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/pier-side-carousel"
+  },
+  "11009": {
+   "group": "family",
+   "minCm": 110,
+   "maxCm": null,
+   "minAge": 4,
+   "type": "Simulator",
+   "audience": "Alle Besucher",
+   "rule": "ab 1,10 m",
+   "lat": 51.621765,
+   "lon": 6.975653,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/time-riders"
+  },
+  "10993": {
+   "group": "family",
+   "minCm": 110,
+   "maxCm": null,
+   "minAge": 5,
+   "type": "Achterbahn",
+   "audience": "Alle Besucher",
+   "rule": "ab 1,10 m, unter 1,30 m mit Begleitung",
+   "lat": 51.619253,
+   "lon": 6.974945,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/movie-park-studio-tour"
+  },
+  "10985": {
+   "group": "family",
+   "minCm": 110,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Wasser",
+   "audience": "Alle Besucher",
+   "rule": "ab 1,10 m, unter 1,40 m mit Begleitung",
+   "lat": 51.619156,
+   "lon": 6.975328,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/excalibur-secrets-of-the-dark-forest"
+  },
+  "10981": {
+   "group": "family",
+   "minCm": 90,
+   "maxCm": null,
+   "minAge": 2,
+   "type": "Wasser",
+   "audience": "Alle Besucher",
+   "rule": "ab 0,90 m, unter 1,20 m mit Begleitung",
+   "lat": 51.621226,
+   "lon": 6.97252,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/area-51-top-secret"
+  },
+  "16233": {
+   "group": "family",
+   "minCm": 100,
+   "maxCm": null,
+   "minAge": null,
+   "type": "Simulator",
+   "audience": "Alle Besucher",
+   "rule": "Nur Personen ab 1,30 m dürfen alleine teilnehmen, Kinder zwischen 1,00 m und 1,30 m nur in Begleitung – unter 1,00 m ist die Teilnahme nicht erlaubt.",
+   "lat": null,
+   "lon": null,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/journey-to-the-forbidden-chamber"
+  },
+  "11005": {
+   "group": "family",
+   "minCm": 120,
+   "maxCm": null,
+   "minAge": 6,
+   "type": "Fahrgeschäft",
+   "audience": "Alle Besucher",
+   "rule": "ab 1,20m",
+   "lat": 51.619579,
+   "lon": 6.975844,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/splat-o-sphere"
+  },
+  "10997": {
+   "group": "family",
+   "minCm": 120,
+   "maxCm": 195,
+   "minAge": 6,
+   "type": "Achterbahn",
+   "audience": "Alle Besucher",
+   "rule": "1,20 m; max. 1,95 m",
+   "lat": 51.619701,
+   "lon": 6.976292,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/ghost-chasers"
+  },
+  "11007": {
+   "group": "thrill",
+   "minCm": 120,
+   "maxCm": null,
+   "minAge": 6,
+   "type": "Achterbahn",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,20 m, unter 1,30 m mit Begleitung",
+   "lat": 51.623731,
+   "lon": 6.973372,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/crazy-surfer",
+   "coordNote": "official value \"51,.23731\" read as 51.623731"
+  },
+  "10982": {
+   "group": "thrill",
+   "minCm": 130,
+   "maxCm": 195,
+   "minAge": 10,
+   "type": "Achterbahn",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,30m; max. 1,95 m",
+   "lat": 51.624715,
+   "lon": 6.973888,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/ironclaw"
+  },
+  "10999": {
+   "group": "thrill",
+   "minCm": 140,
+   "maxCm": 195,
+   "minAge": 10,
+   "type": "Fahrgeschäft",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,40m; max. 1,95 m",
+   "lat": 51.622249,
+   "lon": 6.976238,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/nyc-transformer"
+  },
+  "11004": {
+   "group": "thrill",
+   "minCm": 145,
+   "maxCm": 195,
+   "minAge": 8,
+   "type": "Fahrgeschäft",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,45 m; max. 1,95 m",
+   "lat": 51.624083,
+   "lon": 6.974065,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/side-kick",
+   "coordNote": "official value used commas"
+  },
+  "10984": {
+   "group": "thrill",
+   "minCm": 130,
+   "maxCm": null,
+   "minAge": 7,
+   "type": "Achterbahn",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,30m",
+   "lat": 51.622503,
+   "lon": 6.973879,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/star-trek-operation-enterprise"
+  },
+  "10987": {
+   "group": "thrill",
+   "minCm": 120,
+   "maxCm": null,
+   "minAge": 6,
+   "type": "Achterbahn",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,20 m",
+   "lat": 51.624209,
+   "lon": 6.974695,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/the-bandit"
+  },
+  "10989": {
+   "group": "thrill",
+   "minCm": 145,
+   "maxCm": 195,
+   "minAge": 10,
+   "type": "Free Fall Tower",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,45 m; max. 1,95 m",
+   "lat": 51.623105,
+   "lon": 6.97533,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/the-high-fall"
+  },
+  "11000": {
+   "group": "thrill",
+   "minCm": 120,
+   "maxCm": null,
+   "minAge": 12,
+   "type": "Achterbahn",
+   "audience": "Teenager Erwachsene",
+   "rule": "ab 1,20 m",
+   "lat": 51.621972,
+   "lon": 6.975276,
+   "url": "https://www.movieparkgermany.de/erlebnisse/attraktionen/vanhelsings-factory"
+  },
+  "17662": {
+   "group": "horror"
+  },
+  "15278": {
+   "group": "horror"
+  },
+  "17664": {
+   "group": "horror"
+  },
+  "11119": {
+   "group": "horror"
+  },
+  "12330": {
+   "group": "horror"
+  },
+  "11118": {
+   "group": "horror"
+  },
+  "11117": {
+   "group": "horror"
+  },
+  "17663": {
+   "group": "horror"
+  },
+  "11142": {
+   "group": "horror"
+  },
+  "12331": {
+   "group": "horror"
+  },
+  "17665": {
+   "group": "horror"
+  },
+  "11120": {
+   "group": "horror"
+  },
+  "11140": {
+   "group": "horror"
+  },
+  "11139": {
+   "group": "horror"
+  },
+  "11121": {
+   "group": "horror"
+  },
+  "13964": {
+   "group": "horror"
+  },
+  "10986": {
+   "group": "other"
+  }
+ }
+}
