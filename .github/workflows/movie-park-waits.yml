@@ -1,0 +1,64 @@
+# MovieParkWaits on GitHub Pages: every ~5 minutes, fetch Movie Park wait times from
+# Queue-Times into gh-pages/waits.json, and redeploy the app's static files from APP_REF.
+# Scheduled runs only start from the repo's default branch, so this file lives there too.
+name: Movie Park Waits
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [movie-park-waits]
+    paths: ['MovieParkWaits/**', '.github/workflows/movie-park-waits.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: movie-park-waits-pages
+  cancel-in-progress: false
+
+env:
+  APP_REF: movie-park-waits
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out app
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.APP_REF }}
+          path: app
+
+      - name: Check out gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: site
+
+      - name: Build site and snapshot
+        run: |
+          cp -r app/MovieParkWaits/public/. site/
+          touch site/.nojekyll
+          result=$(node app/MovieParkWaits/scripts/snapshot.mjs site/waits.json)
+          echo "snapshot: $result"
+          cd site
+          # A rewrite with only a new fetchedAt isn't worth a commit.
+          if [ "$result" = "unchanged" ] && git ls-files --error-unmatch waits.json >/dev/null 2>&1; then
+            git checkout -- waits.json
+          fi
+
+      - name: Commit and push
+        working-directory: site
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Update Movie Park waits $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push origin HEAD:gh-pages
