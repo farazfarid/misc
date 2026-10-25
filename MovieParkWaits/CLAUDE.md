@@ -13,7 +13,15 @@ Live wait-time dashboard for **Movie Park Germany (Bottrop)** as a mobile-friend
 - Shape: `{ lands: [{ name, rides: [{ id, name, is_open, wait_time, last_updated }] }], rides: [] }`.
 - Their terms require visible attribution "Powered by Queue-Times.com" linking to the park page. Keep it in the footer.
 - Upstream refreshes about every 5 min. Don't poll faster than `POLL_SECONDS=120` default; be a polite client.
-- The browser can't call Queue-Times directly (no CORS), which is why the server exists.
+- Queue-Times probably doesn't send CORS headers (unverified). Two modes, same `public/` code:
+  - **Server mode**: `app.js` reads `/api/waits` from `server.js`. Preferred, history shared and all-day.
+  - **Direct mode** (static hosting, GitHub Pages): if `/api/waits` 404s, `app.js` fetches Queue-Times
+    itself, trying direct then public CORS proxies (allorigins, codetabs, corsproxy.io), remembers the one
+    that worked, polls every 2 min, and keeps today's history in the viewer's `localStorage`.
+
+## Hosting
+- GitHub Pages serves the `gh-pages` branch = contents of `public/` at the root, plus `.nojekyll`.
+  URL: https://farazfarid.github.io/misc/ . Redeploy by copying `public/` onto `gh-pages` again.
 
 ## Commands
 - `npm start` → live data on http://localhost:3000

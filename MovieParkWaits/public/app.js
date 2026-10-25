@@ -1,7 +1,21 @@
 // Movie Park Waits frontend: polls /api/waits and renders ride cards.
+// Without the Node server (static hosting like GitHub Pages) it falls back to
+// fetching Queue-Times from the browser and keeps today's history in localStorage.
 const REFRESH_MS = 60 * 1000;
 const TREND_WINDOW_MS = 30 * 60 * 1000;
 const PREFS_KEY = 'mpw-prefs-v1';
+const HISTORY_KEY = 'mpw-history-v1';
+const PROXY_KEY = 'mpw-proxy-v1';
+const PARK_ID = '310';
+const UPSTREAM = `https://queue-times.com/parks/${PARK_ID}/queue_times.json`;
+// Queue-Times may not send CORS headers, so try direct first, then public CORS proxies.
+const PROXIES = [
+  (u) => u,
+  (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  (u) => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
+];
+let mode = 'server'; // switches to 'direct' once /api/waits turns out not to exist
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -197,21 +211,104 @@ function showToast(text) {
   toastTimer = setTimeout(() => { els.toast.hidden = true; }, 6000);
 }
 
+// --- Direct mode (no server): same payload shape as the server's /api/waits ---
+
+function berlinDate(d = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Berlin' }).format(d);
+}
+
+function normalize(raw) {
+  const toRide = (r, land) => ({
+    id: String(r.id), name: r.name, land, isOpen: Boolean(r.is_open),
+    wait: Number.isFinite(r.wait_time) ? r.wait_time : null, lastUpdated: r.last_updated || null,
+  });
+  const rides = [];
+  for (const land of raw.lands || []) for (const r of land.rides || []) rides.push(toRide(r, land.name));
+  for (const r of raw.rides || []) rides.push(toRide(r, null));
+  return rides;
+}
+
+async function fetchUpstream() {
+  let preferred = 0;
+  try { preferred = Number(localStorage.getItem(PROXY_KEY)) || 0; } catch { /* ignore */ }
+  const order = [preferred, ...PROXIES.keys()].filter((v, i, a) => a.indexOf(v) === i);
+  let lastErr;
+  for (const i of order) {
+    try {
+      const res = await fetch(PROXIES[i](UPSTREAM), { cache: 'no-store', signal: AbortSignal.timeout(12000) });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const raw = await res.json();
+      if (!Array.isArray(raw.lands) && !Array.isArray(raw.rides)) throw new Error('unexpected response');
+      try { localStorage.setItem(PROXY_KEY, String(i)); } catch { /* ignore */ }
+      return raw;
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr || new Error('no source reachable');
+}
+
+function loadHistory() {
+  try {
+    const h = JSON.parse(localStorage.getItem(HISTORY_KEY) || 'null');
+    if (h && h.date === berlinDate()) return h;
+  } catch { /* ignore */ }
+  return { date: berlinDate(), rides: {} };
+}
+
+function recordHistory(rides) {
+  const h = loadHistory();
+  const now = new Date();
+  for (const r of rides) {
+    const series = (h.rides[r.id] ||= []);
+    const value = r.isOpen ? r.wait : null;
+    const last = series.at(-1);
+    if (last && last[1] === value && now - new Date(last[0]) < 10 * 60 * 1000) continue;
+    series.push([now.toISOString(), value]);
+  }
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch { /* ignore */ }
+  return h;
+}
+
+async function loadDirect() {
+  try {
+    const rides = normalize(await fetchUpstream());
+    const h = recordHistory(rides);
+    return {
+      fetchedAt: new Date().toISOString(), error: null, stale: false,
+      source: { name: 'Queue-Times.com', url: `https://queue-times.com/parks/${PARK_ID}` },
+      rides: rides.map((r) => ({ ...r, history: h.rides[r.id] || [] })),
+    };
+  } catch (err) {
+    if (!data) throw err;
+    return { ...data, error: err.message, stale: true }; // keep showing the last good data
+  }
+}
+
+async function loadFromServer() {
+  const res = await fetch('api/waits', { cache: 'no-store' });
+  const isJson = (res.headers.get('content-type') || '').includes('json');
+  if (res.status === 404 || res.status === 405 || (res.ok && !isJson)) {
+    mode = 'direct';
+    return loadDirect();
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
 async function load() {
   if (loading) return;
   loading = true;
   els.refresh.classList.add('spinning');
   try {
-    const res = await fetch('api/waits', { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    data = await res.json();
+    data = mode === 'direct' ? await loadDirect() : await loadFromServer();
     if (data.source?.url) els.source.href = data.source.url;
     render();
     renderStatus();
     checkAlerts();
   } catch (err) {
     els.banner.hidden = false;
-    els.banner.textContent = `Can't reach the server (${err.message}). Retrying…`;
+    els.banner.textContent = `Can't load wait times (${err.message}). Retrying…`;
   } finally {
     loading = false;
     els.refresh.classList.remove('spinning');
@@ -256,6 +353,8 @@ els.openOnly.addEventListener('change', () => { prefs.openOnly = els.openOnly.ch
 els.refresh.addEventListener('click', load);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) load(); });
 
-setInterval(() => { if (!document.hidden) load(); }, REFRESH_MS);
+// Direct mode hits Queue-Times per viewer, so poll every other tick (2 min) there.
+let tick = 0;
+setInterval(() => { tick++; if (!document.hidden && (mode === 'server' || tick % 2 === 0)) load(); }, REFRESH_MS);
 setInterval(renderStatus, 30 * 1000);
 load();

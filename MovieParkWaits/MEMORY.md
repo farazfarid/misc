@@ -16,3 +16,10 @@
 - Service worker for offline shell + reliable mobile notifications.
 - Park opening hours (Queue-Times doesn't provide them in this endpoint).
 - "Best time to ride" from multi-day history.
+
+## 2026-10-25: GitHub Pages hosting
+- Added direct mode to `public/app.js` (see CLAUDE.md "Data source"), so the static page works without the server.
+- Tested in Playwright with upstream faked: direct OK, direct blocked → allorigins fallback, all sources failing → banner. Server mode unchanged, tests pass.
+- Deployed `public/` to the `gh-pages` branch. Pages has to be switched on once in repo Settings → Pages → Deploy from branch `gh-pages` / root.
+- **Risk**: direct mode depends on Queue-Times allowing CORS or on free third-party proxies, which can rate-limit or vanish. A proper fix is a tiny own proxy (e.g. a Cloudflare Worker) set as the first entry in `PROXIES`.
+- Not verified against live Queue-Times from this container (network blocked).
