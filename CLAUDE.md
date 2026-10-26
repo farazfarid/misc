@@ -38,3 +38,7 @@ folder is self-contained:
   your locked Mac and sounds a siren if it's tampered with, unless a
   paired iPhone is nearby. Swift Package, AppKit-based, unbuilt/untested
   (built without macOS access). See `TheftAlert/CLAUDE.md`.
+- `PSParty/` — macOS menu-bar app for PlayStation party voice chat without
+  a console: boots Google's Android emulator with the official PlayStation
+  App inside. Swift Package, AppKit, unbuilt/untested (built without macOS
+  access). See `PSParty/CLAUDE.md`.
